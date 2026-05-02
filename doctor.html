@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Doctors - VisitCare</title>
+
+<style>
+body {
+    margin: 0;
+    font-family: 'Segoe UI', sans-serif;
+    background: #f4f7fb;
+}
+
+/* HEADER */
+header {
+    background: #0a66c2;
+    color: white;
+    padding: 15px 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* LOGO */
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 22px;
+    font-weight: bold;
+}
+
+.logo img {
+    width: 45px;
+    height: auto;
+    border-radius: 8px;
+}
+
+nav a {
+    color: white;
+    margin-left: 20px;
+    text-decoration: none;
+}
+
+/* PROFILE BUTTON */
+.profile-btn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: white;
+    color: #0a66c2;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 13px;
+    cursor: pointer;
+    border: none;
+    font-weight: bold;
+}
+
+.profile-btn:hover {
+    background: #e6e6e6;
+}
+
+.profile-btn img {
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #0a66c2;
+}
+
+/* HERO */
+.hero {
+    background: linear-gradient(to right, #0a66c2, #00c6ff);
+    color: white;
+    text-align: center;
+    padding: 60px 20px;
+}
+
+.hero h1 {
+    font-size: 38px;
+    margin-bottom: 5px;
+}
+
+.hero p {
+    font-size: 16px;
+    opacity: 0.95;
+}
+
+/* DOCTOR SECTION */
+.doctor-section {
+    padding: 40px 20px;
+    text-align: center;
+}
+
+.doctor-grid {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 25px;
+    margin-top: 25px;
+}
+
+.doctor-card {
+    background: white;
+    width: 300px;
+    border-radius: 15px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+    overflow: hidden;
+    text-align: left;
+    transition: 0.3s;
+}
+
+.doctor-card:hover {
+    transform: translateY(-6px);
+}
+
+.doctor-card img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+}
+
+.doctor-info {
+    padding: 18px;
+}
+
+.doctor-info h2 {
+    margin: 0;
+    font-size: 18px;
+    color: #0a66c2;
+}
+
+.doctor-info p {
+    margin: 6px 0;
+    font-size: 14px;
+    color: #333;
+}
+
+.fee {
+    font-size: 15px;
+    font-weight: bold;
+    color: green;
+}
+
+.card-btns {
+    display: flex;
+    gap: 10px;
+    margin-top: 12px;
+}
+
+.book-btn {
+    flex: 1;
+    background: #0a66c2;
+    color: white;
+    padding: 10px;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.book-btn:hover {
+    background: #084f96;
+}
+
+.whatsapp-btn {
+    flex: 1;
+    background: #25D366;
+    color: white;
+    padding: 10px;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.whatsapp-btn:hover {
+    background: #1ebc57;
+}
+
+/* FOOTER */
+footer {
+    background: #0a66c2;
+    color: white;
+    text-align: center;
+    padding: 15px;
+    margin-top: 40px;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+    <div class="logo">
+        <img src="images/logo.png" alt="VisitCare Logo">
+        VisitCare
+    </div>
+
+    <nav>
+        <a href="index.html">Home</a>
+        <a href="index.html#services">Services</a>
+        <a href="index.html#book">Book</a>
+        <a href="about.html">About us</a>
+    </nav>
+
+    <button class="profile-btn" onclick="goProfile()">
+        <img id="headerProfilePic" src="" alt="Profile">
+        Profile
+    </button>
+</header>
+
+<section class="hero">
+    <h1>Select Doctor</h1>
+    <p>Choose a doctor and book your appointment instantly</p>
+</section>
+
+<section class="doctor-section">
+    <h2>Available Doctors</h2>
+
+    <div class="doctor-grid">
+
+        <!-- DOCTOR 1 -->
+        <div class="doctor-card">
+            <img src="images/doctor1.jpg" alt="Doctor">
+            <div class="doctor-info">
+                <h2>Dr. Ranjan Kumar</h2>
+                <p>👨‍⚕️ General Physician (MBBS)</p>
+                <p>⭐ Experience: 8 Years</p>
+                <p>⏰ Timing: 10 AM - 5 PM</p>
+                <p class="fee">💰 Fee: ₹399</p>
+
+                <div class="card-btns">
+                    <button class="book-btn" onclick="bookDoctor('Dr. Ranjan Kumar','₹399')">Book</button>
+                    <button class="whatsapp-btn" onclick="whatsappDoctor()">WhatsApp</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- DOCTOR 2 -->
+        <div class="doctor-card">
+            <img src="images/doctor2.jpg" alt="Doctor">
+            <div class="doctor-info">
+                <h2>Dr. Nandan Kumar</h2>
+                <p>👩‍⚕️ Pediatrician (MBBS, MD)</p>
+                <p>⭐ Experience: 2 Years</p>
+                <p>⏰ Timing: 11 AM - 6 PM</p>
+                <p class="fee">💰 Fee: ₹499</p>
+
+                <div class="card-btns">
+                    <button class="book-btn" onclick="bookDoctor('Dr. Nandan Kumar','₹499')">Book</button>
+                    <button class="whatsapp-btn" onclick="whatsappDoctor()">WhatsApp</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- DOCTOR 3 -->
+        <div class="doctor-card">
+            <img src="images/doctor3.jpg" alt="Doctor">
+            <div class="doctor-info">
+                <h2>Dr. Amit Verma</h2>
+                <p>🦴 Physiotherapist (BPT, MPT)</p>
+                <p>⭐ Experience: 5 Years</p>
+                <p>⏰ Timing: 9 AM - 2 PM</p>
+                <p class="fee">💰 Fee: ₹299</p>
+
+                <div class="card-btns">
+                    <button class="book-btn" onclick="bookDoctor('Dr. Amit Verma','₹299')">Book</button>
+                    <button class="whatsapp-btn" onclick="whatsappDoctor()">WhatsApp</button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</section>
+
+<footer>
+    <p>© 2026 VisitCare | All Rights Reserved</p>
+</footer>
+
+<script>
+function goProfile() {
+    window.location.href = "profile.html";
+}
+
+function whatsappDoctor() {
+    window.location.href = "https://wa.me/918084512153";
+}
+
+// Save selected doctor then redirect
+function bookDoctor(doctorName, doctorFee) {
+    localStorage.setItem("visitcare_selected_doctor", doctorName);
+    localStorage.setItem("visitcare_selected_fee", doctorFee);
+    window.location.href = "doctor-book.html";
+}
+
+// Profile Pic update
+function updateProfilePic() {
+    let savedPic = localStorage.getItem("visitcare_profilepic");
+    let gender = localStorage.getItem("visitcare_gender");
+
+    let defaultEmoji = "👤";
+    if (gender === "Male") defaultEmoji = "👨";
+    if (gender === "Female") defaultEmoji = "👩";
+
+    if (savedPic) {
+        document.getElementById("headerProfilePic").src = savedPic;
+    } else {
+        let emojiSVG = `data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='60' height='60'><text x='50%25' y='60%25' font-size='40' text-anchor='middle'>${defaultEmoji}</text></svg>`;
+        document.getElementById("headerProfilePic").src = emojiSVG;
+    }
+}
+
+window.onload = function() {
+    updateProfilePic();
+};
+</script>
+
+</body>
+</html>

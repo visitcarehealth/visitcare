@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Doctor Booking - VisitCare</title>
+
+<style>
+body {
+    margin: 0;
+    font-family: 'Segoe UI', sans-serif;
+    background: #f4f7fb;
+}
+
+header {
+    background: #0a66c2;
+    color: white;
+    padding: 15px 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 22px;
+    font-weight: bold;
+}
+
+.logo img {
+    width: 45px;
+    border-radius: 8px;
+}
+
+nav a {
+    color: white;
+    margin-left: 20px;
+    text-decoration: none;
+}
+
+.profile-btn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: white;
+    color: #0a66c2;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 13px;
+    cursor: pointer;
+    border: none;
+    font-weight: bold;
+}
+
+.profile-btn img {
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #0a66c2;
+}
+
+.hero {
+    background: linear-gradient(to right, #0a66c2, #00c6ff);
+    color: white;
+    text-align: center;
+    padding: 60px 20px;
+}
+
+.hero h1 {
+    font-size: 34px;
+    margin-bottom: 5px;
+}
+
+.hero p {
+    font-size: 15px;
+    opacity: 0.95;
+}
+
+.form-section {
+    background: white;
+    padding: 35px;
+    margin: 30px auto;
+    width: 85%;
+    max-width: 650px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+}
+
+.form-section h2 {
+    text-align: center;
+    color: #0a66c2;
+}
+
+input, select, textarea {
+    width: 100%;
+    padding: 12px;
+    margin: 10px 0;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    font-size: 15px;
+    box-sizing: border-box;
+}
+
+button {
+    background: #0a66c2;
+    color: white;
+    padding: 12px;
+    border: none;
+    cursor: pointer;
+    width: 100%;
+    margin-top: 10px;
+    border-radius: 8px;
+    font-size: 16px;
+}
+
+button:hover {
+    background: #084f96;
+}
+
+.join-btn {
+    background: #25D366;
+}
+
+.join-btn:hover {
+    background: #1ebc57;
+}
+
+.payment-box {
+    background: #f4f7fb;
+    padding: 12px;
+    border-radius: 10px;
+    margin: 10px 0;
+}
+
+footer {
+    background: #0a66c2;
+    color: white;
+    text-align: center;
+    padding: 15px;
+    margin-top: 40px;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+    <div class="logo">
+        <img src="images/logo.png" alt="VisitCare Logo">
+        VisitCare
+    </div>
+
+    <nav>
+        <a href="index.html">Home</a>
+        <a href="doctor.html">Doctors</a>
+        <a href="about.html">About us</a>
+    </nav>
+
+    <button class="profile-btn" onclick="goProfile()">
+        <img id="headerProfilePic" src="" alt="Profile">
+        Profile
+    </button>
+</header>
+
+<section class="hero">
+    <h1>Book Doctor Appointment</h1>
+    <p>Select your time & confirm your consultation</p>
+</section>
+
+<section class="form-section">
+    <h2>Appointment Details</h2>
+
+    <form id="doctorBookingForm" onsubmit="submitDoctorBooking(event)">
+        <input type="text" id="doctorName" placeholder="Doctor Name" readonly>
+        <input type="text" id="doctorFee" placeholder="Consultation Fee" readonly>
+
+        <input type="text" id="patientName" placeholder="Your Name" required>
+        <input type="tel" id="patientPhone" placeholder="Phone Number" required>
+        <input type="email" id="patientEmail" placeholder="Email Address" required>
+
+        <select id="consultType" required>
+            <option value="">Select Consultation Type</option>
+            <option value="Clinic Visit">🏥 Clinic Visit</option>
+            <option value="Online Consultation">📹 Online Consultation</option>
+        </select>
+
+        <input type="date" id="appointmentDate" required>
+        <input type="time" id="appointmentTime" required>
+
+        <textarea id="patientProblem" placeholder="Describe your problem"></textarea>
+
+        <div class="payment-box">
+            <label><input type="radio" name="payment" value="upi" checked> 💳 Pay with UPI</label><br>
+            <label><input type="radio" name="payment" value="cod"> 🏠 Pay at Clinic</label>
+        </div>
+
+        <button type="submit">Confirm Appointment</button>
+
+        <button type="button" class="join-btn" onclick="joinOnline()">
+            📹 Join Online Consultation (WhatsApp Video)
+        </button>
+
+        <button type="button" onclick="addToCalendar()">
+            🔔 Add Reminder to Google Calendar
+        </button>
+    </form>
+</section>
+
+<footer>
+    <p>© 2026 VisitCare | All Rights Reserved</p>
+</footer>
+
+<script>
+function goProfile() {
+    window.location.href = "profile.html";
+}
+
+window.onload = function() {
+    let doctor = localStorage.getItem("visitcare_selected_doctor");
+    let fee = localStorage.getItem("visitcare_selected_fee");
+
+    document.getElementById("doctorName").value = doctor || "Not Selected";
+    document.getElementById("doctorFee").value = fee || "Not Available";
+
+    document.getElementById("patientName").value = localStorage.getItem("visitcare_name") || "";
+    document.getElementById("patientPhone").value = localStorage.getItem("visitcare_phone") || "";
+    document.getElementById("patientEmail").value = localStorage.getItem("visitcare_email") || "";
+
+    updateProfilePic();
+};
+
+function joinOnline() {
+    window.open("https://wa.me/918084512153", "_blank");
+}
+
+function addToCalendar() {
+    let doctor = document.getElementById("doctorName").value;
+    let date = document.getElementById("appointmentDate").value;
+    let time = document.getElementById("appointmentTime").value;
+
+    if (!date || !time) {
+        alert("Please select date and time first!");
+        return;
+    }
+
+    let startDateTime = date.replace(/-/g, "") + "T" + time.replace(":", "") + "00";
+    let endDateTime = date.replace(/-/g, "") + "T" + (parseInt(time.split(":")[0]) + 1).toString().padStart(2,"0") + time.split(":")[1] + "00";
+
+    let url = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=VisitCare Appointment with ${doctor}&dates=${startDateTime}/${endDateTime}&details=Your appointment is scheduled with ${doctor}.&location=VisitCare`;
+
+    window.open(url, "_blank");
+}
+
+function payNow(amount) {
+    let upiId = "YOUR_UPI_ID@upi";
+    let upiLink = `upi://pay?pa=${upiId}&pn=VisitCare&am=${amount}&cu=INR&tn=Doctor Booking`;
+
+    window.location.href = upiLink;
+}
+
+function submitDoctorBooking(e) {
+    e.preventDefault();
+
+    let doctor = document.getElementById("doctorName").value;
+    let fee = document.getElementById("doctorFee").value;
+
+    let name = document.getElementById("patientName").value;
+    let phone = document.getElementById("patientPhone").value;
+    let email = document.getElementById("patientEmail").value;
+
+    let consultType = document.getElementById("consultType").value;
+    let date = document.getElementById("appointmentDate").value;
+    let time = document.getElementById("appointmentTime").value;
+    let problem = document.getElementById("patientProblem").value;
+
+    let payment = document.querySelector('input[name="payment"]:checked').value;
+
+    if (!name || !phone || !consultType || !date || !time) {
+        alert("Please fill all required details");
+        return;
+    }
+
+    let cleanFee = fee.replace("₹", "").trim();
+
+    if (payment === "upi") {
+        payNow(cleanFee);
+    }
+
+    let url = "https://script.google.com/macros/s/AKfycbyJEbNW1FIY6oV8l97Lv1QCCQHXmE4KiEuNCfETDqZQ95jL2sj7Z-5D5TJmVMdDh0T2Bw/exec";
+
+    fetch(url + `?type=doctor_booking&doctor=${encodeURIComponent(doctor)}&fee=${encodeURIComponent(fee)}&name=${encodeURIComponent(name)}&phone=${encodeURIComponent(phone)}&email=${encodeURIComponent(email)}&consultType=${encodeURIComponent(consultType)}&date=${encodeURIComponent(date)}&time=${encodeURIComponent(time)}&problem=${encodeURIComponent(problem)}&payment=${encodeURIComponent(payment)}`)
+    .then(res => res.text())
+    .then(data => {
+
+        document.querySelector(".form-section").innerHTML = `
+            <h2 style="color:green;">✅ Appointment Confirmed</h2>
+            <p>Thank you ${name}!</p>
+            <p>Your doctor appointment is booked successfully.</p>
+            <p><b>Doctor:</b> ${doctor}</p>
+            <p><b>Date:</b> ${date}</p>
+            <p><b>Time:</b> ${time}</p>
+            <p><b>Payment:</b> ${payment === "upi" ? "UPI" : "Pay at Clinic"}</p>
+            <p><b>Fee:</b> ${fee}</p>
+        `;
+
+        let orders = JSON.parse(localStorage.getItem("visitcare_orders")) || [];
+
+        orders.push({
+            type: "Doctor",
+            details: doctor + " (" + consultType + ")",
+            price: fee,
+            date: date,
+            time: time,
+            payment: payment === "upi" ? "UPI" : "Pay at Clinic"
+        });
+
+        localStorage.setItem("visitcare_orders", JSON.stringify(orders));
+    })
+    .catch(err => {
+        console.log(err);
+        alert("Booking failed!");
+    });
+}
+
+function updateProfilePic() {
+    let savedPic = localStorage.getItem("visitcare_profilepic");
+    let gender = localStorage.getItem("visitcare_gender");
+
+    let defaultEmoji = "👤";
+    if (gender === "Male") defaultEmoji = "👨";
+    if (gender === "Female") defaultEmoji = "👩";
+
+    if (savedPic) {
+        document.getElementById("headerProfilePic").src = savedPic;
+    } else {
+        let emojiSVG = `data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='60' height='60'><text x='50%25' y='60%25' font-size='40' text-anchor='middle'>${defaultEmoji}</text></svg>`;
+        document.getElementById("headerProfilePic").src = emojiSVG;
+    }
+}
+</script>
+
+</body>
+</html>

@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lab Tests - VisitCare</title>
+
+<style>
+body {
+    font-family: 'Segoe UI', sans-serif;
+    background: #f4f7fb;
+    margin: 0;
+}
+
+header {
+    background: #0a66c2;
+    color: white;
+    padding: 15px;
+    text-align: center;
+}
+
+.cart-top {
+    padding: 15px;
+    background: white;
+    text-align: center;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+.tests {
+    display: flex;
+    overflow-x: auto;
+    padding: 20px;
+    gap: 15px;
+}
+
+.card {
+    background: white;
+    min-width: 230px;
+    border-radius: 10px;
+    padding: 15px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+.card img {
+    width: 100%;
+    height: 140px;
+    object-fit: cover;
+    border-radius: 8px;
+}
+
+.price {
+    color: green;
+    font-weight: bold;
+}
+
+button {
+    background: #0a66c2;
+    color: white;
+    border: none;
+    padding: 9px;
+    width: 100%;
+    margin-top: 10px;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.categories {
+    display: flex;
+    overflow-x: auto;
+    padding: 15px;
+    gap: 15px;
+}
+
+.cat {
+    background: white;
+    padding: 15px;
+    min-width: 130px;
+    text-align: center;
+    border-radius: 10px;
+}
+
+.popup {
+    position: fixed;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+    background: rgba(0,0,0,0.6);
+    display:none;
+    justify-content:center;
+    align-items:center;
+    z-index: 9999;
+}
+
+.popup-box {
+    background:white;
+    padding:20px;
+    width:90%;
+    max-width:460px;
+    border-radius:10px;
+    max-height: 90vh;
+    overflow-y: auto;
+}
+
+input, textarea, select {
+    width:100%;
+    padding:10px;
+    margin:6px 0;
+    border-radius:6px;
+    border:1px solid #ccc;
+    box-sizing: border-box;
+}
+
+.close-btn {
+    background: #777;
+}
+
+.pay-btn {
+    background: #25D366;
+}
+
+.cart-item {
+    background: #f4f7fb;
+    padding: 8px;
+    border-radius: 8px;
+    margin: 6px 0;
+    font-size: 14px;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+    <h2>VisitCare Lab Tests</h2>
+</header>
+
+<div class="cart-top">
+    <button onclick="openCart()">🧪 View Lab Cart (<span id="cartCount">0</span>)</button>
+</div>
+
+<h3 style="padding-left:20px;">Popular Lab Tests</h3>
+
+<div class="tests">
+
+    <div class="card">
+        <img src="images/lab1.jpg">
+        <h4>CBC Test</h4>
+        <p>Complete Blood Count test.</p>
+        <p class="price">₹250</p>
+        <button onclick="addToCart('CBC Test',250)">Add Test</button>
+    </div>
+
+    <div class="card">
+        <img src="images/lab2.jpg">
+        <h4>Thyroid Profile</h4>
+        <p>T3, T4, TSH test.</p>
+        <p class="price">₹499</p>
+        <button onclick="addToCart('Thyroid Profile',499)">Add Test</button>
+    </div>
+
+    <div class="card">
+        <img src="images/lab3.jpg">
+        <h4>Blood Sugar Test</h4>
+        <p>Fasting / Random sugar test.</p>
+        <p class="price">₹120</p>
+        <button onclick="addToCart('Blood Sugar Test',120)">Add Test</button>
+    </div>
+
+    <div class="card">
+        <img src="images/lab4.jpg">
+        <h4>Liver Function Test</h4>
+        <p>LFT health checkup.</p>
+        <p class="price">₹699</p>
+        <button onclick="addToCart('Liver Function Test',699)">Add Test</button>
+    </div>
+
+    <div class="card">
+        <img src="images/lab5.jpg">
+        <h4>Kidney Function Test</h4>
+        <p>KFT health checkup.</p>
+        <p class="price">₹650</p>
+        <button onclick="addToCart('Kidney Function Test',650)">Add Test</button>
+    </div>
+
+    <div class="card">
+        <img src="images/lab6.jpg">
+        <h4>Full Body Checkup</h4>
+        <p>Basic full body package.</p>
+        <p class="price">₹1499</p>
+        <button onclick="addToCart('Full Body Checkup',1499)">Add Test</button>
+    </div>
+
+</div>
+
+<h3 style="padding-left:20px;">Test Categories</h3>
+
+<div class="categories">
+    <div class="cat">Blood Test</div>
+    <div class="cat">Diabetes</div>
+    <div class="cat">Thyroid</div>
+    <div class="cat">Liver</div>
+    <div class="cat">Kidney</div>
+    <div class="cat">Vitamin</div>
+    <div class="cat">Full Body</div>
+    <div class="cat">Fever</div>
+</div>
+
+<div id="popup" class="popup">
+    <div class="popup-box">
+
+        <h3>🧪 Your Lab Cart</h3>
+        <div id="cartItems"></div>
+        <h3>Total: ₹<span id="totalAmount">0</span></h3>
+
+        <input id="custName" placeholder="Name">
+        <input id="custPhone" placeholder="Phone">
+        <input id="custEmail" placeholder="Email">
+
+        <input id="flat" placeholder="Flat / House No / Landmark">
+        <input id="address" placeholder="Full Address">
+
+        <button type="button" onclick="getLocation()">📍 Use Live Location</button>
+
+        <input id="collectionDate" type="date">
+        <select id="collectionTime">
+            <option value="">Select Time Slot</option>
+            <option value="7 AM - 9 AM">7 AM - 9 AM</option>
+            <option value="9 AM - 11 AM">9 AM - 11 AM</option>
+            <option value="11 AM - 1 PM">11 AM - 1 PM</option>
+            <option value="4 PM - 6 PM">4 PM - 6 PM</option>
+        </select>
+
+        <textarea id="note" placeholder="Extra note"></textarea>
+
+        <label><input type="radio" name="payment" value="upi" checked> 💳 Pay with UPI</label><br>
+        <label><input type="radio" name="payment" value="cod"> 🏠 Pay at Home</label>
+
+        <button type="button" onclick="submitLabBooking()">✅ Confirm Lab Booking</button>
+<button type="button" class="close-btn" onclick="closePopup()">Close</button>
+        <button type="button" onclick="submitLabBooking()">✅ Confirm Lab Booking</button>
+        <button type="button" class="close-btn" onclick="closePopup()">Close</button>
+
+    </div>
+</div>
+
+<script>
+let labCart = JSON.parse(localStorage.getItem("visitcare_lab_cart")) || [];
+
+function saveCart() {
+    localStorage.setItem("visitcare_lab_cart", JSON.stringify(labCart));
+    updateCartCount();
+}
+
+function updateCartCount() {
+    document.getElementById("cartCount").innerText = labCart.length;
+}
+
+function addToCart(name, price) {
+    let existing = labCart.find(item => item.name === name);
+
+    if (existing) {
+        alert("Ye test already cart me hai");
+        return;
+    }
+
+    labCart.push({ name: name, price: price });
+    saveCart();
+    alert("✅ Test added to cart");
+}
+
+function openCart() {
+    if (labCart.length === 0) {
+        alert("Lab cart empty hai");
+        return;
+    }
+
+    document.getElementById("custName").value = localStorage.getItem("visitcare_name") || "";
+    document.getElementById("custPhone").value = localStorage.getItem("visitcare_phone") || "";
+    document.getElementById("custEmail").value = localStorage.getItem("visitcare_email") || "";
+
+    renderCart();
+    document.getElementById("popup").style.display = "flex";
+}
+
+function renderCart() {
+    let cartBox = document.getElementById("cartItems");
+    cartBox.innerHTML = "";
+
+    let total = 0;
+
+    labCart.forEach((item, index) => {
+        total += item.price;
+
+        cartBox.innerHTML += `
+            <div class="cart-item">
+                <b>${item.name}</b><br>
+                ₹${item.price}
+                <button onclick="removeItem(${index})">Remove</button>
+            </div>
+        `;
+    });
+
+    document.getElementById("totalAmount").innerText = total;
+    localStorage.setItem("labTotal", total);
+}
+
+function removeItem(index) {
+    labCart.splice(index, 1);
+    saveCart();
+
+    if (labCart.length === 0) {
+        closePopup();
+    } else {
+        renderCart();
+    }
+}
+
+function closePopup() {
+    document.getElementById("popup").style.display = "none";
+}
+
+function getLocation() {
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(async function(pos) {
+            let lat = pos.coords.latitude;
+            let lon = pos.coords.longitude;
+
+            document.getElementById("address").value = lat + "," + lon;
+
+            try {
+                let res = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}`);
+                let data = await res.json();
+
+                if (data && data.display_name) {
+                    document.getElementById("address").value = data.display_name;
+                }
+            } catch (err) {
+                console.log("Location address error:", err);
+            }
+        });
+    } else {
+        alert("Location not supported");
+    }
+}
+
+function getTestText() {
+    return labCart.map(item => item.name + " = ₹" + item.price).join(", ");
+}
+
+function payNow() {
+    let total = localStorage.getItem("labTotal") || "0";
+
+    if (total === "0") {
+        alert("Cart empty hai");
+        return;
+    }
+
+    let upiId = "8084512153-2@ybl";
+    let upiLink = `upi://pay?pa=${upiId}&pn=VisitCare&am=${total}&cu=INR&tn=VisitCare Lab Test Booking`;
+
+    window.location.href = upiLink;
+}
+
+function submitLabBooking() {
+
+    if (labCart.length === 0) {
+        alert("Lab cart empty hai");
+        return;
+    }
+
+    let payment = document.querySelector('input[name="payment"]:checked').value;
+
+    let name = document.getElementById("custName").value;
+    let phone = document.getElementById("custPhone").value;
+    let email = document.getElementById("custEmail").value;
+    let flat = document.getElementById("flat").value;
+    let address = document.getElementById("address").value;
+    let date = document.getElementById("collectionDate").value;
+    let time = document.getElementById("collectionTime").value;
+    let note = document.getElementById("note").value;
+
+    if (name === "" || phone === "" || address === "" || date === "" || time === "") {
+        alert("Name, phone, address, date aur time fill karo");
+        return;
+    }
+
+    let test = getTestText();
+    let price = localStorage.getItem("labTotal") || "0";
+
+    // 👉 UPI payment open
+    if (payment === "upi") {
+        payNow(price);
+    }
+
+    let url = "https://script.google.com/macros/s/AKfycbyJEbNW1FIY6oV8l97Lv1QCCQHXmE4KiEuNCfETDqZQ95jL2sj7Z-5D5TJmVMdDh0T2Bw/exec";
+
+    fetch(url + `?type=lab_test&test=${encodeURIComponent(test)}&price=${price}&name=${encodeURIComponent(name)}&phone=${encodeURIComponent(phone)}&email=${encodeURIComponent(email)}&flat=${encodeURIComponent(flat)}&address=${encodeURIComponent(address)}&date=${encodeURIComponent(date)}&time=${encodeURIComponent(time)}&note=${encodeURIComponent(note)}&payment=${payment}`)
+    .then(res => res.text())
+    .then(data => {
+
+        // ✅ Flipkart style success UI
+        document.querySelector(".popup-box").innerHTML = `
+            <h2 style="color:green;">✅ Order Confirmed</h2>
+            <p>Thank you ${name}!</p>
+            <p>Your Lab Test is booked successfully.</p>
+            <p><b>Total:</b> ₹${price}</p>
+        `;
+
+        // ✅ Save order
+        let orders = JSON.parse(localStorage.getItem("visitcare_orders")) || [];
+
+        orders.push({
+            type: "Lab Test",
+            details: test,
+            price: price,
+            date: date,
+            time: time,
+            payment: payment
+        });
+
+        localStorage.setItem("visitcare_orders", JSON.stringify(orders));
+
+        labCart = [];
+        saveCart();
+
+    })
+    .catch(err => {
+        alert("Lab booking failed!");
+    });
+}
+
+updateCartCount();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VisitCare</title>
+
+<style>
+body {
+    margin: 0;
+    font-family: 'Segoe UI', sans-serif;
+    background: #f4f7fb;
+}
+
+/* HEADER */
+header {
+    background: #0a66c2;
+    color: white;
+    padding: 15px 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo {
+    font-size: 22px;
+    font-weight: bold;
+}
+
+nav a {
+    color: white;
+    margin-left: 20px;
+    text-decoration: none;
+}
+
+/* HERO */
+.hero {
+    background: linear-gradient(to right, #0a66c2, #00c6ff);
+    color: white;
+    text-align: center;
+    padding: 90px 20px;
+}
+
+.hero h1 {
+    font-size: 42px;
+}
+
+.hero p {
+    font-size: 18px;
+    margin-top: 10px;
+}
+
+.btn {
+    margin-top: 20px;
+    padding: 12px 25px;
+    background: white;
+    color: #0a66c2;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+/* SERVICES */
+.services {
+    padding: 50px 20px;
+    text-align: center;
+}
+
+.service-box {
+    background: white;
+    padding: 20px;
+    margin: 15px;
+    display: inline-block;
+    width: 260px;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+/* FORM */
+.form-section {
+    background: white;
+    padding: 40px;
+    margin: 30px auto;
+    width: 80%;
+    border-radius: 10px;
+}
+
+input, textarea {
+    width: 100%;
+    padding: 12px;
+    margin: 10px 0;
+}
+
+button {
+    background: #0a66c2;
+    color: white;
+    padding: 12px;
+    border: none;
+    cursor: pointer;
+}
+
+/* FOOTER */
+footer {
+    background: #0a66c2;
+    color: white;
+    text-align: center;
+    padding: 15px;
+}
+
+/* WHATSAPP BUTTON */
+.whatsapp {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background: #25D366;
+    color: white;
+    padding: 15px;
+    border-radius: 50%;
+    font-size: 18px;
+    text-decoration: none;
+}
+</style>
+
+</head>
+<body>
+
+<header>
+    <div class="logo">VisitCare</div>
+    <nav>
+        <a href="#">Home</a>
+        <a href="#services">Services</a>
+        <a href="#book">Book</a>
+    </nav>
+</header>
+
+<section class="hero">
+    <h1>VisitCare</h1>
+    <p>Doctor Consultation & Medicine Delivery at Your Doorstep</p>
+    <button class="btn" onclick="scrollToForm()">Book Now</button>
+</section>
+
+<section id="services" class="services">
+    <h2>Our Services</h2>
+
+    <div class="service-box">
+        <h3>Doctor Consultation</h3>
+        <p>Connect with doctors from the comfort of your home.</p>
+    </div>
+
+    <div class="service-box">
+        <h3>Medicine Delivery</h3>
+        <p>Get medicines delivered quickly to your doorstep.</p>
+    </div>
+
+    <div class="service-box">
+        <h3>Lab Tests</h3>
+        <p>Book diagnostic tests without leaving your home.</p>
+    </div>
+</section>
+
+<section id="book" class="form-section">
+    <h2>Book Appointment</h2>
+    <form onsubmit="submitForm(event)">
+        <input type="text" placeholder="Your Name" required>
+        <input type="tel" placeholder="Phone Number" required>
+        <textarea placeholder="Describe your issue"></textarea>
+        <button type="submit">Submit</button>
+    </form>
+</section>
+
+<footer>
+    <p>© 2026 VisitCare | All Rights Reserved</p>
+</footer>
+
+<a class="whatsapp" href="https://wa.me/916202240023">💬</a>
+
+<script>
+function scrollToForm() {
+    document.getElementById("book").scrollIntoView({behavior: "smooth"});
+}
+
+function submitForm(e) {
+    e.preventDefault();
+    alert("Request submitted! We will contact you soon.");
+}
+</script>
+
+</body>
+</html>

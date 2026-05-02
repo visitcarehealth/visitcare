@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Admin Orders - VisitCare</title>
+
+<style>
+body {
+    font-family: 'Segoe UI', sans-serif;
+    background: #f4f7fb;
+    margin: 0;
+}
+
+header {
+    background: #0a66c2;
+    color: white;
+    padding: 15px;
+    text-align: center;
+}
+
+.orders {
+    padding: 15px;
+}
+
+.card {
+    background: white;
+    padding: 15px;
+    margin-bottom: 12px;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.status {
+    font-weight: bold;
+    color: orange;
+}
+
+button {
+    padding: 10px;
+    margin: 5px 3px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    color: white;
+}
+
+.complete {
+    background: green;
+}
+
+.cancel {
+    background: red;
+}
+
+.whatsapp {
+    background: #25D366;
+}
+
+.refresh {
+    background: #0a66c2;
+    width: 90%;
+    margin: 15px;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+    <h2>VisitCare Admin Orders</h2>
+</header>
+
+<button class="refresh" onclick="loadOrders()">🔄 Refresh Orders</button>
+
+<div id="ordersBox" class="orders"></div>
+
+<script>
+let scriptURL = "https://script.google.com/macros/s/AKfycbyJEbNW1FIY6oV8l97Lv1QCCQHXmE4KiEuNCfETDqZQ95jL2sj7Z-5D5TJmVMdDh0T2Bw/exec";
+
+function loadOrders() {
+    fetch(scriptURL + "?action=list_orders")
+    .then(res => res.json())
+    .then(data => {
+        let box = document.getElementById("ordersBox");
+        box.innerHTML = "";
+
+        if (data.length === 0) {
+            box.innerHTML = "<p>No orders found</p>";
+            return;
+        }
+
+        data.reverse().forEach(o => {
+            let details = o.test || o.service || o.doctor || o.medicine || o.problem || "";
+
+            box.innerHTML += `
+                <div class="card">
+                    <b>🆔 ${o.orderId || "No ID"}</b><br>
+                    <b>Type:</b> ${o.type || o.sheet}<br>
+                    <b>Name:</b> ${o.name || ""}<br>
+                    <b>Phone:</b> ${o.phone || ""}<br>
+                    <b>Address:</b> ${o.address || ""}<br>
+                    <b>Details:</b> ${details}<br>
+                    <b>Price:</b> ₹${o.price || o.fee || ""}<br>
+                    <b>Payment:</b> ${o.payment || ""}<br>
+                    <b>Status:</b> <span class="status">${o.status || "Processing"}</span><br><br>
+
+                    <button class="complete" onclick="updateStatus('${o.sheet}', '${o.row}', 'Completed')">✅ Mark Completed</button>
+                    <button class="cancel" onclick="updateStatus('${o.sheet}', '${o.row}', 'Cancelled')">❌ Cancel</button>
+                    <button class="whatsapp" onclick="sendWhatsApp('${o.phone || ""}', '${o.orderId || ""}', '${o.status || "Processing"}')">📲 WhatsApp</button>
+                </div>
+            `;
+        });
+    })
+    .catch(err => {
+        alert("Orders load nahi ho rahe");
+        console.log(err);
+    });
+}
+
+function updateStatus(sheet, row, status) {
+    fetch(scriptURL + `?action=update_status&sheet=${encodeURIComponent(sheet)}&row=${encodeURIComponent(row)}&status=${encodeURIComponent(status)}`)
+    .then(res => res.text())
+    .then(data => {
+        alert("Status updated: " + status);
+        loadOrders();
+    })
+    .catch(err => {
+        alert("Status update failed");
+        console.log(err);
+    });
+}
+
+function sendWhatsApp(phone, orderId, status) {
+    if (!phone) {
+        alert("Phone number missing");
+        return;
+    }
+
+    let cleanPhone = phone.replace(/\D/g, "");
+
+    if (!cleanPhone.startsWith("91")) {
+        cleanPhone = "91" + cleanPhone;
+    }
+
+    let message = `Hello, your VisitCare order ${orderId} status is ${status}. Thank you for choosing VisitCare.`;
+    let url = `https://wa.me/${cleanPhone}?text=${encodeURIComponent(message)}`;
+
+    window.open(url, "_blank");
+}
+
+loadOrders();
+</script>
+
+</body>
+</html>

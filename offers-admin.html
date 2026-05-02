@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Offer Admin - VisitCare</title>
+<style>
+body{font-family:sans-serif;background:#f4f7fb;padding:30px;}
+.box{background:white;padding:20px;border-radius:10px;max-width:500px;margin:auto;}
+input,select,button{width:100%;padding:10px;margin:8px 0;}
+button{background:#0a66c2;color:white;border:none;border-radius:6px;}
+.offer{background:#eee;padding:10px;margin:8px 0;border-radius:6px;}
+</style>
+</head>
+<body>
+
+<div class="box">
+<h2>Manage Offers</h2>
+
+<input id="image" placeholder="Image path e.g. images/offer4.jpg">
+
+<select id="link">
+<option value="medicine.html">Medicine</option>
+<option value="lab.html">Lab Test</option>
+<option value="doctor.html">Doctor</option>
+<option value="physio.html">Physiotherapy</option>
+<option value="nursing.html">Nursing</option>
+</select>
+
+<input id="title" placeholder="Offer title">
+
+<button onclick="addOffer()">Add Offer</button>
+<button onclick="clearOffers()">Clear All Offers</button>
+
+<h3>Current Offers</h3>
+<div id="offerList"></div>
+</div>
+
+<script>
+function loadList(){
+    let offers = JSON.parse(localStorage.getItem("visitcare_offers")) || [];
+    let box = document.getElementById("offerList");
+    box.innerHTML = "";
+
+    offers.forEach((o,i)=>{
+        box.innerHTML += `
+            <div class="offer">
+                <b>${o.title}</b><br>
+                ${o.image}<br>
+                Link: ${o.link}<br>
+                <button onclick="deleteOffer(${i})">Delete</button>
+            </div>
+        `;
+    });
+}
+
+function addOffer(){
+    let image = document.getElementById("image").value;
+    let link = document.getElementById("link").value;
+    let title = document.getElementById("title").value;
+
+    if(!image || !title){
+        alert("Image aur title daalo");
+        return;
+    }
+
+    let offers = JSON.parse(localStorage.getItem("visitcare_offers")) || [];
+
+    offers.push({image, link, title});
+
+    localStorage.setItem("visitcare_offers", JSON.stringify(offers));
+
+    alert("Offer added");
+    loadList();
+}
+
+function deleteOffer(i){
+    let offers = JSON.parse(localStorage.getItem("visitcare_offers")) || [];
+    offers.splice(i,1);
+    localStorage.setItem("visitcare_offers", JSON.stringify(offers));
+    loadList();
+}
+
+function clearOffers(){
+    localStorage.removeItem("visitcare_offers");
+    loadList();
+}
+
+loadList();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nursing Care - VisitCare</title>
+
+<style>
+body {
+    font-family: 'Segoe UI', sans-serif;
+    background: #f4f7fb;
+    margin: 0;
+    text-align: center;
+}
+
+header {
+    background: #0a66c2;
+    color: white;
+    padding: 15px;
+}
+
+.form-box {
+    background: white;
+    width: 90%;
+    max-width: 520px;
+    margin: 30px auto;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+input, textarea, select {
+    width: 100%;
+    padding: 10px;
+    margin: 8px 0;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    box-sizing: border-box;
+}
+
+button {
+    background: #0a66c2;
+    color: white;
+    padding: 10px;
+    border: none;
+    width: 100%;
+    margin-top: 10px;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.pay {
+    background: #25D366;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+    <h2>Nursing Care Service</h2>
+</header>
+
+<div class="form-box">
+
+<h3>Book Nursing Care</h3>
+
+<input id="name" placeholder="Your Name">
+<input id="phone" placeholder="Phone Number">
+<input id="email" placeholder="Email Address">
+
+<input id="address" placeholder="Address">
+<button type="button" onclick="getLocation()">📍 Use Live Location</button>
+
+<select id="service">
+    <option value="">Select Nursing Service</option>
+    <option value="Injection Service">Injection Service - ₹199</option>
+    <option value="Wound Dressing">Wound Dressing - ₹299</option>
+    <option value="Elder Care">Elder Care - ₹499</option>
+    <option value="Post Surgery Care">Post Surgery Care - ₹699</option>
+    <option value="Full Day Nurse">Full Day Nurse - ₹1499</option>
+</select>
+
+<input type="date" id="date">
+<input type="time" id="time">
+
+<textarea id="problem" placeholder="Describe requirement"></textarea>
+
+<label><input type="radio" name="payment" value="upi" checked> UPI</label>
+<label><input type="radio" name="payment" value="cod"> Pay at Home</label>
+
+<button class="pay" onclick="payNow()">💳 Pay with UPI</button>
+<button onclick="submitBooking()">Confirm Booking</button>
+
+</div>
+
+<script>
+window.onload = function(){
+    document.getElementById("name").value = localStorage.getItem("visitcare_name") || "";
+    document.getElementById("phone").value = localStorage.getItem("visitcare_phone") || "";
+    document.getElementById("email").value = localStorage.getItem("visitcare_email") || "";
+};
+
+function getServicePrice(service) {
+    if (service === "Injection Service") return 199;
+    if (service === "Wound Dressing") return 299;
+    if (service === "Elder Care") return 499;
+    if (service === "Post Surgery Care") return 699;
+    if (service === "Full Day Nurse") return 1499;
+    return 0;
+}
+
+function getLocation() {
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(async function(pos) {
+            let lat = pos.coords.latitude;
+            let lon = pos.coords.longitude;
+
+            document.getElementById("address").value = lat + "," + lon;
+
+            try {
+                let res = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}`);
+                let data = await res.json();
+
+                if (data && data.display_name) {
+                    document.getElementById("address").value = data.display_name;
+                }
+            } catch (err) {
+                console.log(err);
+            }
+        });
+    } else {
+        alert("Location not supported");
+    }
+}
+
+function payNow(){
+    let service = document.getElementById("service").value;
+    let amount = getServicePrice(service);
+
+    if (!service || amount === 0) {
+        alert("Pehle nursing service select karo");
+        return;
+    }
+
+    let upi = "YOUR_UPI_ID@upi";
+    let link = `upi://pay?pa=${upi}&pn=VisitCare&am=${amount}&cu=INR&tn=Nursing Care Booking`;
+
+    window.location.href = link;
+}
+
+function submitBooking(){
+    let name = document.getElementById("name").value;
+    let phone = document.getElementById("phone").value;
+    let email = document.getElementById("email").value;
+    let address = document.getElementById("address").value;
+    let service = document.getElementById("service").value;
+    let date = document.getElementById("date").value;
+    let time = document.getElementById("time").value;
+    let problem = document.getElementById("problem").value;
+    let payment = document.querySelector('input[name="payment"]:checked').value;
+
+    let amount = getServicePrice(service);
+
+    if(!name || !phone || !address || !service || !date || !time){
+        alert("Sab required details fill karo");
+        return;
+    }
+
+    let url = "https://script.google.com/macros/s/AKfycbyJEbNW1FIY6oV8l97Lv1QCCQHXmE4KiEuNCfETDqZQ95jL2sj7Z-5D5TJmVMdDh0T2Bw/exec";
+
+    fetch(url + `?type=nursing_booking&name=${encodeURIComponent(name)}&phone=${encodeURIComponent(phone)}&email=${encodeURIComponent(email)}&address=${encodeURIComponent(address)}&service=${encodeURIComponent(service)}&price=${encodeURIComponent(amount)}&date=${encodeURIComponent(date)}&time=${encodeURIComponent(time)}&problem=${encodeURIComponent(problem)}&payment=${encodeURIComponent(payment)}`)
+    .then(res => res.text())
+    .then(() => {
+        document.body.innerHTML = `
+            <div style="font-family:sans-serif; text-align:center; padding:40px;">
+                <h2 style="color:green;">✅ Booking Confirmed</h2>
+                <p>Thank you ${name}!</p>
+                <p>Your nursing care booking is successful.</p>
+                <p><b>Service:</b> ${service}</p>
+                <p><b>Date:</b> ${date}</p>
+                <p><b>Time:</b> ${time}</p>
+                <p><b>Total:</b> ₹${amount}</p>
+                <p><b>Payment:</b> ${payment === "upi" ? "UPI" : "Pay at Home"}</p>
+            </div>
+        `;
+
+        let orders = JSON.parse(localStorage.getItem("visitcare_orders")) || [];
+
+        orders.push({
+            type: "Nursing",
+            details: service,
+            price: amount,
+            date: date,
+            time: time,
+            payment: payment === "upi" ? "UPI" : "Pay at Home"
+        });
+
+        localStorage.setItem("visitcare_orders", JSON.stringify(orders));
+    })
+    .catch(() => alert("Booking failed"));
+}
+</script>
+
+</body>
+</html>

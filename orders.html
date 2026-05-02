@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My Orders - VisitCare</title>
+
+<style>
+body {
+    font-family: 'Segoe UI', sans-serif;
+    background: #f4f7fb;
+    margin: 0;
+}
+
+header {
+    background: #0a66c2;
+    color: white;
+    padding: 15px;
+    text-align: center;
+}
+
+.tabs {
+    display: flex;
+    overflow-x: auto;
+    background: white;
+    padding: 10px;
+    gap: 10px;
+}
+
+.tab {
+    padding: 10px 15px;
+    background: #eee;
+    border-radius: 8px;
+    cursor: pointer;
+    white-space: nowrap;
+}
+
+.tab.active {
+    background: #0a66c2;
+    color: white;
+}
+
+.orders {
+    padding: 15px;
+}
+
+.card {
+    background: white;
+    padding: 12px;
+    margin-bottom: 12px;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.status-processing {
+    color: orange;
+    font-weight: bold;
+}
+
+.status-completed {
+    color: green;
+    font-weight: bold;
+}
+
+.status-cancelled {
+    color: red;
+    font-weight: bold;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+    <h2>📦 My Orders</h2>
+</header>
+
+<div class="tabs">
+    <div class="tab active" onclick="showTab('all', this)">All</div>
+    <div class="tab" onclick="showTab('doctor_booking', this)">Doctor</div>
+    <div class="tab" onclick="showTab('lab_test', this)">Lab</div>
+    <div class="tab" onclick="showTab('medicine_order', this)">Medicine</div>
+    <div class="tab" onclick="showTab('physio_booking', this)">Physio</div>
+    <div class="tab" onclick="showTab('nursing_booking', this)">Nursing</div>
+</div>
+
+<div id="ordersBox" class="orders"></div>
+
+<script>
+
+let scriptURL = "https://script.google.com/macros/s/AKfycbyJEbNW1FIY6oV8l97Lv1QCCQHXmE4KiEuNCfETDqZQ95jL2sj7Z-5D5TJmVMdDh0T2Bw/exec";
+
+let allOrders = [];
+let userPhone = localStorage.getItem("visitcare_phone");
+
+function loadOrders() {
+    if (!userPhone) {
+        alert("Login required");
+        return;
+    }
+
+    fetch(scriptURL + "?action=user_orders&phone=" + userPhone)
+    .then(res => res.json())
+    .then(data => {
+        allOrders = data;
+        showTab('all', document.querySelector(".tab"));
+    })
+    .catch(err => {
+        console.log(err);
+        alert("Orders load nahi ho rahe");
+    });
+}
+
+function showTab(type, el) {
+
+    document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
+    if (el) el.classList.add("active");
+
+    let box = document.getElementById("ordersBox");
+    box.innerHTML = "";
+
+    let filtered = [];
+
+    if (type === "all") {
+        filtered = allOrders;
+    } else {
+        filtered = allOrders.filter(o => o.type === type);
+    }
+
+    if (filtered.length === 0) {
+        box.innerHTML = "<p>No orders found</p>";
+        return;
+    }
+
+    filtered.reverse().forEach(o => {
+
+        let statusClass = "status-processing";
+        if (o.status === "Completed") statusClass = "status-completed";
+        if (o.status === "Cancelled") statusClass = "status-cancelled";
+
+        let details =
+            o.doctor || o.medicine || o.test || o.service || "Service";
+
+        box.innerHTML += `
+            <div class="card">
+                <b>🆔 ${o.orderId}</b><br><br>
+
+                📋 ${details}<br>
+                💰 ₹${o.price || ""}<br>
+                📅 ${o.date || ""} ⏰ ${o.time || ""}<br>
+                💳 ${o.payment || ""}<br>
+
+                📌 Status:
+                <span class="${statusClass}">
+                    ${o.status}
+                </span>
+            </div>
+        `;
+    });
+}
+
+loadOrders();
+
+</script>
+
+</body>
+</html>
